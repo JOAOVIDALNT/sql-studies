@@ -37,4 +37,3 @@ em caso de sucesso, retorna o valor convetido, caso contrário retorna nulo.
     SELECT TRY_CONVERT(DATETIME, @sampletext); -- NULL
     SELECT TRY_CONVERT(DATETIME, @realDate, 111); -- Sep, 13 2015
 ```
-
