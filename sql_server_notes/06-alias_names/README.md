@@ -1,3 +1,5 @@
+# CHAPTER 6: Alias
+
 ## Alias derivado de table name
 
 ```sql

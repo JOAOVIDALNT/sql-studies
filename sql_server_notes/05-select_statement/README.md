@@ -1,6 +1,6 @@
-## Chapter 5: SELECT statement
+# Chapter 5: SELECT statement
 
-### GROUP BY
+## GROUP BY
 O GROUP BY é geralmente usado para agregar dados e conseguir insights. Existem 3 fases ao utilizar o GROUP BY:
 
 - Split: os dados são divididos em pedaços de linhas baseado nos valores das variaveis que escolhemos para agregar.
