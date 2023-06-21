@@ -80,6 +80,7 @@ SELECT FORMAT(@Date, N'dddd, MMMM dd, yyyy hh:mm:ss tt')
 ## Arguments
 - Para o DATETIME 2023-01-13 00:20:03.333, o próximo gráfico mostra quais seriam as saidas para cada argumento:
 
+<br>
 
 | Argument | Output |
 |------|------|
@@ -101,10 +102,11 @@ SELECT FORMAT(@Date, N'dddd, MMMM dd, yyyy hh:mm:ss tt')
 | ss | 02 |
 | s | 2 |
 | tt | AM |
-| t | A |
+| t  | A |
 | fff | 333 |
 | ff | 33 |
 | f | 3 |
+
 <hr>
 
 - Você pode fornecer um único argumento para a função FORMAT() para gerar uma saída pre-formatada:
@@ -114,15 +116,28 @@ DECLARE @Date DATETIME = '2016-09-05 00:01:02.333'
 SELECT FORMAT(@Date, N'U')
 -- return: Monday, September 05, 2016 4:01:02 AM
 ```
+| Single Argument | Output |
+|------|------|
+| D | Monday, September 05, 2016 |
+| d | 9/5/2016 |
+| F | Monday, September 05, 2016 12:01:02 AM |
+| f | Monday, September 05, 2016 12:01 AM |
+| G | 9/5/2016 12:01:02 AM |
+| g | 9/5/2016 12:01 AM |
+| M | September 05 |
+| O | 2016-09-05T00:01:02.3330000 |
+| R | Mon, 05 Sep 2016 00:01:02 GMT |
+| s | 2016-09-05T00:01:02 |
+| T | 12:01:02 AM |
+| t | 12:01 AM |
+| U | Monday, September 05, 2016 4:01:02 AM |
+| u | 2016-09-05 00:01:02Z |
+| Y | September, 2016 |
 
+- Acima estamos utilizando a cultura americana (en-US culture). Podemos específicar uma cultura diferente utilizando um terceiro parâmetro no FORMAT()
 
-
-
-
-
-
-
-
-
-
-
+```sql
+    DECLARE @Date DATETIME = '2016-09-05 00:01:02.333'
+    SELECT FORMAT(@Date, N'U', 'zh-cn')
+    -- return: 2016年9月5日 4:01:02
+```
