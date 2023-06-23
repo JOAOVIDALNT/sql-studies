@@ -141,3 +141,86 @@ SELECT FORMAT(@Date, N'U')
     SELECT FORMAT(@Date, N'U', 'zh-cn')
     -- return: 2016年9月5日 4:01:02
 ```
+
+## DATEADD for adding and substracting time periods
+
+- General syntax:
+
+```sql
+DATEADD (datepart, number, datetime_expr)
+```
+
+- Para medidas de tempo, números positivos adicionam enquanto negativos reduzem.
+
+```sql
+    DECLARE @now DATETIME2 = GETDATE();
+    SELECT @now; --2016-07-21 14:39:46.4170000
+    SELECT DATEADD(YEAR, 1, @now) --2017-07-21 14:39:46.4170000
+    SELECT DATEADD(QUARTER, 1, @now) --2016-10-21 14:39:46.4170000
+    SELECT DATEADD(WEEK, 1, @now) --2016-07-28 14:39:46.4170000
+    SELECT DATEADD(DAY, 1, @now) --2016-07-22 14:39:46.4170000
+    SELECT DATEADD(HOUR, 1, @now) --2016-07-21 15:39:46.4170000
+    SELECT DATEADD(MINUTE, 1, @now) --2016-07-21 14:40:46.4170000
+    SELECT DATEADD(SECOND, 1, @now) --2016-07-21 14:39:47.4170000
+    SELECT DATEADD(MILLISECOND, 1, @now)--2016-07-21 14:39:46.4180000
+```
+
+- Note que DATEADD também aceita abreviações no parâmetro datepart. O uso dessas abreviações geralmente é desencorajador e também pode ser confuso.
+
+## Create a function to calculate a person's age on a specific date
+
+Essa função vai pegar 2 parâmetros datetimes, the DOB, and a date to check the age at
+
+```sql
+    CREATE FUNCTION [dbo].[Calc_Age]
+    (
+    @DOB datetime , @calcDate datetime
+    )
+    RETURNS int
+    AS
+    BEGIN
+    declare @age int
+    IF (@calcDate < @DOB )
+    RETURN -1
+    -- If a DOB is supplied after the comparison date, then return -1
+    SELECT @age = YEAR(@calcDate) - YEAR(@DOB) +
+    CASE WHEN DATEADD(year,YEAR(@calcDate) - YEAR(@DOB)
+    ,@DOB) > @calcDate THEN -1 ELSE 0 END
+
+    RETURN @age
+
+    END
+```
+```sql
+    --eg to check the age today of someone born on 1/1/2000
+    SELECT dbo.Calc_Age('2000-01-01',Getdate())
+```
+
+## Get the current DateTime
+
+As funções nativas GETDATE and GETUTCDATE cada uma retorna a data e tempo atuais sem o timezone offset. <br>
+<br>
+O valor retornado de ambas as funções é baseado no sistema operacional do computador em que a instância do SQL Server está rodando. <br><br>
+
+O valor de retorno do GETDATE representa o tempo atual no mesmo timezone do sistema operacional. O valor retornado pelo GETUTCDATE representa o UTC time atual. <br><br>
+
+Ambas as funções podem ser incluidas em uma claúsula <strong>SELECT</strong> em uma consulta ou como parte de uma expressão booleana em uma claúsula <strong>WHERE</strong><br><br>
+
+### Examples
+```sql
+    -- example query that selects the current time in both the server time zone and UTC
+    SELECT GETDATE() as SystemDateTime, GETUTCDATE() as UTCDateTime
+    -- example query records with EventDate in the past.
+    SELECT * FROM MyEvents WHERE EventDate < GETDATE()
+```
+There are a few other built-in functions that return different variations of the current date-time:
+```sql
+    SELECT
+    GETDATE(), --2016-07-21 14:27:37.447
+    GETUTCDATE(), --2016-07-21 18:27:37.447
+    CURRENT_TIMESTAMP, --2016-07-21 14:27:37.447
+    SYSDATETIME(), --2016-07-21 14:27:37.4485768
+    SYSDATETIMEOFFSET(),--2016-07-21 14:27:37.4485768 -04:00
+    SYSUTCDATETIME() --2016-07-21 18:27:37.4485768
+```
+
